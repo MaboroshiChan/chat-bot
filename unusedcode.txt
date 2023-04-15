@@ -1,0 +1,18 @@
+"""
+@bot.message_handler(content_types=['text'])
+def send_text(message):
+    print("received message: ", message.text)
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "user", "content": message.text}
+            ],
+        )
+        if response.choices:
+            print("response: ", response.choices[0].message.content)
+            bot.reply_to(message, response.choices[0].message.content)
+    except Exception as e:
+        print("error: ", e)
+        bot.send_message(message.chat.id, "We had an error, please try again later")
+"""

@@ -1,0 +1,17 @@
+curl --location --request POST 'https://api.twitter.com/2/oauth2/token' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'code=SUJUZ0FZUVFpMjk1T2t0VUJKRzk1ZEVlRHM1ZXBqSWlfQkRIbkpLOEFsenpyOjE2ODExNjMyMzc5MjU6MToxOmFjOjE' \
+--data-urlencode 'grant_type=client_credentials' \
+--data-urlencode 'client_id=M1NrUW84cFRUMVdZSWcwcnJLSDc6MTpjaQ' \
+--data-urlencode 'client_secret=Lo99PHHCF3KPyfseUN8gjci4BNDJqA4J3tTU_C9ciptKcHRPYN'
+--data-urlencode 'redirect_uri=https://127.0.0.1' \
+--data-urlencode 'code_verifier=challenge'\
+--data-urlencode 'client_type=public_client'
+
+
+
+curl --request POST \
+
+  --url 'https://api.twitter.com/1.1/statuses/update.json?status=Hello%20world' \
+
+  --header 'authorization: OAuth oauth_consumer_key="CONSUMER_API_KEY", oauth_nonce="OAUTH_NONCE", oauth_signature="OAUTH_SIGNATURE", oauth_signature_method="HMAC-SHA1", oauth_timestamp="OAUTH_TIMESTAMP", oauth_token="ACCESS_TOKEN", oauth_version="1.0"' \
