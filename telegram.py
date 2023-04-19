@@ -12,12 +12,15 @@ bot = telebot.TeleBot(API_KEY)
 with open("prompt.txt", "r") as f:
     prompt = f.read()
 
+print("prompt: ", prompt)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 chat_cache = [{
         "role": "girl", "content": 
             prompt
     }]
+
+completion_cache = [prompt]
 
 def print_chat_cache(chat_cache):
     print("chat history: ")
@@ -61,28 +64,46 @@ def send_as_girl_but_do_not_evaluate_instantly(message):
         chat_cache.append({"role":"girl", "content": get_body[1]})
         print_chat_cache(chat_cache)
 
-@bot.message_handler(content_types=['/text'])
+@bot.message_handler(content_types=['text'])
 def chat_davinci(message):
     try:
+        #completion_cache.append("女生：" + message.text + "\n\n")
+        chat_cache.append({
+            "role": "girl",
+            "content": message.text + "\n\n"
+        })
+        for k in chat_cache:
+            completion_cache.append(k['role'] + ": " + k['content'] + "\n\n")
+        print("completion cache: ", completion_cache)
+
+        to_send=""
+        for t in completion_cache:
+            to_send+=t
         bot.send_message(message.chat.id, "Please wait while I think...")
         response = openai.Completion.create(
-            engine="text-davinci:003",
-            prompt=prompt,
-            temperature=0.9,
+            engine="text-davinci-003",
+            prompt=to_send,
+            temperature=0.5,
             max_tokens=150,
             top_p=1,
             frequency_penalty=0,
-            presence_penalty=0.6,
-            stop=["\n", " Human:", " AI:"]
+            presence_penalty=0.6
         )
-        bot.send_message(message.chat.id, response.choices[0].text)
+        bot.delete_message(message.chat.id, message.message_id + 1)
+        resp = response.choices[0].text.split(":", 1)[1]
+        bot.send_message(message.chat.id, resp)
+        #completion_cache.append(response.choices[0].text + "\n\n")
+        chat_cache.append({
+            "role": "me",
+            "content": resp
+        })
     except Exception as e:
         print("error: ", e)
         bot.send_message(message.chat.id, "We had an error, please try again later")
-    print("received message", message.text)
-    
 
-@bot.message_handler(content_types=['text'])
+    print("received message", message.text)
+
+@bot.message_handler(content_types=['/text'])
 def chat_mode(message):
     print("received message: ", message.text)
     chat_cache.append({"role": "girl", "content": message.text})
