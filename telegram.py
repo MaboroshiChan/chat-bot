@@ -12,9 +12,6 @@ bot = telebot.TeleBot(API_KEY)
 with open("prompt.txt", "r") as f:
     prompt = f.read()
 
-print("prompt: ", prompt)
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
 chat_cache = [{
         "role": "girl", "content": 
             prompt
@@ -134,6 +131,15 @@ def chat_mode(message):
     except Exception as e:
         print("error: ", e)
         bot.send_message(message.chat.id, "We had an error, please try again later")
+
+@bot.message_handler(content_types=['/continue'])
+def continue_chat(message):
+    ## TODO: Complete this function
+    # 1. Get the last messages from the chat cache
+    # 2. Send the last messages to the openai api
+    # 3. Send the response to the user
+    # 4. Add the response to the chat cache
+    pass
 
 print("Bot is running...")
 bot.polling()
